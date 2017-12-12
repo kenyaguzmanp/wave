@@ -32,9 +32,10 @@ function plotSine(ctx, xOffset, yOffset) {
   ctx.lineWidth = 2;
   ctx.strokeStyle = "rgb(66,44,255)";
 
-  
+  //initial position of sin points
   var x = 4;
   var y = 0;
+  //wave features
   var amplitude = 40;
   var frequency = 20;
 
@@ -44,11 +45,11 @@ function plotSine(ctx, xOffset, yOffset) {
       y = height/2 + amplitude * Math.sin((x+xOffset)/frequency);
       ctx.lineTo(x, y);
       x++;
-      // console.log("x="+x+" y="+y);
+ 
   }
   ctx.stroke();
   ctx.save();
-  //console.log("Drawing point at y=" + y);
+
   ctx.stroke();
   ctx.restore();
 }
@@ -64,6 +65,7 @@ function draw() {
   plotSine(context, step, 50);
   context.restore();
   
+  //step: animation's speed
   step += 4;
   //the animation:
   //window.requestAnimationFrame(draw);
@@ -96,3 +98,42 @@ var step = -4;
   ctx.stroke();
 
   */
+
+  soundFile = new Audio("audio-sample.mp3");
+
+  //prefixed and non-prefixed AudioContext Instance
+  //prefixed:  Webkit/Blink browsers
+  //non-prefixed instance for Firefox (desktop/mobile/OS)
+  var audioCtx = new (window.AudioContext || window.webkitAudioContext)();  
+  //create an audio source
+  var bufferSource = audioCtx.createBufferSource();
+  console.log("buffer source: ", bufferSource);
+  var mediaSource = audioCtx.createMediaElementSource(soundFile);
+  console.log("mediaSource ", mediaSource);
+  //create an analyser node
+  var analyser = audioCtx.createAnalyser();
+  console.log("analyser: ", analyser);
+  //Connect the MediaElementSource
+  mediaSource.connect(analyser);
+  // frequencyBinCount tells you how many values you'll receive from the analyser
+  var frequencyData = new Uint8Array(analyser.frequencyBinCount);
+  console.log("frequencyData ", frequencyData);
+
+  // receive data
+  // loop
+  function renderFrame() {
+    requestAnimationFrame(renderFrame);
+    // update data in frequencyData
+    analyser.getByteFrequencyData(frequencyData);
+    // render frame based on values in frequencyData
+    // console.log(frequencyData)
+ }
+ soundFile.play();
+ renderFrame();
+
+  /*
+  function loadSound(soundFile){
+    return axios.get(soundFile, {
+      responseType: 'arraybuffer',
+    });
+  }*/
