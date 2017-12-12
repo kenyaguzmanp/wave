@@ -24,16 +24,6 @@ function showAxes(ctx,axes) {
   
 }
 
-function drawPoint(ctx, y) {            
-  var radius = 3;
-  ctx.beginPath();
-  // Hold x constant at 4 so the point only moves up and down.
-  ctx.arc(4, y, radius, 0, 2 * Math.PI, false);
-  ctx.fillStyle = 'red';
-  ctx.fill();
-  ctx.lineWidth = 1;
-  ctx.stroke();
-}
 function plotSine(ctx, xOffset, yOffset) {
   var width = ctx.canvas.width;
   var height = ctx.canvas.height;
@@ -41,15 +31,13 @@ function plotSine(ctx, xOffset, yOffset) {
   ctx.beginPath();
   ctx.lineWidth = 2;
   ctx.strokeStyle = "rgb(66,44,255)";
-  // console.log("Drawing point...");
-  // drawPoint(ctx, yOffset+step);
+
   
   var x = 4;
   var y = 0;
   var amplitude = 40;
   var frequency = 20;
-  //ctx.moveTo(x, y);
-  //ctx.moveTo(x, 1);
+
 
 
   while (x < width) {
@@ -61,7 +49,6 @@ function plotSine(ctx, xOffset, yOffset) {
   ctx.stroke();
   ctx.save();
   //console.log("Drawing point at y=" + y);
-  //drawPoint(ctx, y);
   ctx.stroke();
   ctx.restore();
 }
@@ -87,7 +74,6 @@ function init() {
   draw();
   //init the animation:
   //window.requestAnimationFrame(draw);
-  //spirograph();
 }
 var step = -4;
 
