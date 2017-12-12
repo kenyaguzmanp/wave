@@ -115,21 +115,22 @@ var step = -4;
   console.log("analyser: ", analyser);
   //Connect the MediaElementSource
   mediaSource.connect(analyser);
+  
   // frequencyBinCount tells you how many values you'll receive from the analyser
-  var frequencyData = new Uint8Array(analyser.frequencyBinCount);
-  console.log("frequencyData ", frequencyData);
+  var dataArray = new Uint8Array(analyser.frequencyBinCount); // Uint8Array should be the same length as the frequencyBinCount 
 
   // receive data
   // loop
   function renderFrame() {
     requestAnimationFrame(renderFrame);
     // update data in frequencyData
-    analyser.getByteFrequencyData(frequencyData);
+    analyser.getByteFrequencyData(dataArray);
     // render frame based on values in frequencyData
-    // console.log(frequencyData)
  }
  soundFile.play();
  renderFrame();
+ console.log("dataArray: ", dataArray);
+ console.log("type of dataArray: " , dataArray);
 
   /*
   function loadSound(soundFile){
