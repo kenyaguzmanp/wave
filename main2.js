@@ -14,7 +14,7 @@ analyserNode.fftSize = 256;
 var bufferLength = analyserNode.frequencyBinCount;
 console.log("bufferLength " + bufferLength);
 var dataArray = new Float32Array(bufferLength);
-console.log("dataArray: " , dataArray);
+//console.log("dataArray: " , dataArray);
 
 //Set up audio node network
 audioSourceNode.connect(analyserNode);
@@ -60,7 +60,7 @@ function draw() {
     posXarray.push(posX);
     //console.log("posX: " + posX);
   }
-  console.log("posXarray: " + posXarray);
+  //console.log("posXarray: " + posXarray);
 };
 
 draw();
