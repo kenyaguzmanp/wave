@@ -12,7 +12,9 @@ var audioSourceNode = audioCtx.createMediaElementSource(audioEle);
 var analyserNode = audioCtx.createAnalyser();
 analyserNode.fftSize = 256;
 var bufferLength = analyserNode.frequencyBinCount;
+console.log("bufferLength " + bufferLength);
 var dataArray = new Float32Array(bufferLength);
+console.log("dataArray: " , dataArray);
 
 //Set up audio node network
 audioSourceNode.connect(analyserNode);
@@ -28,8 +30,12 @@ canvas.height = window.innerHeight;
 document.body.appendChild(canvas);
 var canvasCtx = canvas.getContext('2d');
 canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+console.log("canvas height: " + canvas.height);  
 
-
+//posX Array 
+var posXarray=[];
+//initialize
+posXarray[0]=0;
 function draw() {
   //Schedule next redraw
   requestAnimationFrame(draw);
@@ -41,16 +47,20 @@ function draw() {
   //Draw black background
   canvasCtx.fillStyle = 'rgb(0, 0, 0)';
   canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-
+  
   //Draw spectrum
-  var barWidth = (canvas.width / bufferLength) * 0.5;
+  var barWidth = (canvas.width / bufferLength) * 2;
   var posX = 0;
   for (var i = 0; i < bufferLength; i++) {
-    var barHeight = (dataArray[i] + 140) * 2;
+    var barHeight = (dataArray[i]+130) * 2;
     canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight + 100) + ', 50, 50)';
     canvasCtx.fillRect(posX, canvas.height - barHeight / 2, barWidth, barHeight / 2);
-    posX += barWidth + 1;
+    //space between bars
+    posX += barWidth + 8;
+    posXarray.push(posX);
+    //console.log("posX: " + posX);
   }
+  console.log("posXarray: " + posXarray);
 };
 
 draw();
