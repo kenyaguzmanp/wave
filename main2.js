@@ -109,7 +109,7 @@ function draw() {
 
     canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight + 100) + ', 50, 50)';
     //canvasCtx.fillRect(posX, posY, barWidth, barHeight / 2);
-    canvasCtx.fillRect(posX, posYUp, barWidth, barHeight / 2);
+    //canvasCtx.fillRect(posX, posYUp, barWidth, barHeight / 2);
    
     //draw the left corner  down point of every bar
     canvasCtx.fillStyle = 'yellow';
@@ -117,22 +117,36 @@ function draw() {
 
     canvasCtx.fillStyle = 'white';
     canvasCtx.fillRect(posX2-4, posY2Up, barWidth/4, 5);
-    //bezier curves
-    canvasCtx.lineWidth = 1;
-    canvasCtx.strokeStyle = 'white';
-    canvasCtx.beginPath();
-    //initial point
-    canvasCtx.moveTo(posX, posY2Up);
-    canvasCtx.bezierCurveTo(posX+epsilon, posYUp, posX2 - epsilon, posYUp, posX2, posY2Up);
-    canvasCtx.stroke();
+    
+    //if even index then is the down wave
+    if(i%2 === 0){
+      canvasCtx.fillStyle = 'green';
+      canvasCtx.fillRect(posX2-4, posY2Up - 200, barWidth/4, 5);
 
+      canvasCtx.lineWidth = 1;
+      canvasCtx.strokeStyle = 'white';
+      canvasCtx.beginPath();
+      //initial point
+      canvasCtx.moveTo(posX, posY2Up);
+      canvasCtx.bezierCurveTo(posX+epsilon, posYUp + 200 , posX2 - epsilon, posYUp + 200, posX2, posY2Up);
+      canvasCtx.stroke();  
+
+    }
+    //if odd index then is the up wave 
+    else{
+      //bezier curves
+      canvasCtx.lineWidth = 1;
+      canvasCtx.strokeStyle = 'white';
+      canvasCtx.beginPath();
+      //initial point
+      canvasCtx.moveTo(posX, posY2Up);
+      canvasCtx.bezierCurveTo(posX+epsilon, posYUp, posX2 - epsilon, posYUp, posX2, posY2Up);
+      canvasCtx.stroke();
+    }
 
     //space between bars
     posX += barWidth + 8;
-
     posX2 += barWidth + 8;
-    //posXarray.push(posX);
-    //console.log("posX: " + posX);
 
     
 
