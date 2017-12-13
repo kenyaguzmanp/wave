@@ -105,30 +105,39 @@ function draw() {
     var barHeight = normalizedDataArray * 5;
     //var barHeight = (dataArray[i]+130) * 5;
     var posY = canvas.height - barHeight / 2;
-    var posYUp = posY - 200;
-
+    var upValue = 200;
+    var posYUp = posY - upValue;
+    //bars:
     canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight + 100) + ', 50, 50)';
     //canvasCtx.fillRect(posX, posY, barWidth, barHeight / 2);
-    //canvasCtx.fillRect(posX, posYUp, barWidth, barHeight / 2);
+    canvasCtx.fillRect(posX, posYUp, barWidth, barHeight / 2);
    
+    //reference points:
     //draw the left corner  down point of every bar
+    /*
     canvasCtx.fillStyle = 'yellow';
     canvasCtx.fillRect(posX, posY2/2, barWidth/4, 5);
 
     canvasCtx.fillStyle = 'white';
     canvasCtx.fillRect(posX2-4, posY2Up, barWidth/4, 5);
-    
+    */
+    //control points 
+    var cp1x = posX+epsilon;
+    var cp1y = posYUp;
+    var cp2x = posX2 - epsilon;
+    var cp2y = posYUp;
+
     //if even index then is the down wave
     if(i%2 === 0){
       canvasCtx.fillStyle = 'green';
-      canvasCtx.fillRect(posX2-4, posY2Up - 200, barWidth/4, 5);
+      canvasCtx.fillRect(posX2-4, posY2Up - upValue, barWidth/4, 5);
 
       canvasCtx.lineWidth = 1;
       canvasCtx.strokeStyle = 'white';
       canvasCtx.beginPath();
       //initial point
       canvasCtx.moveTo(posX, posY2Up);
-      canvasCtx.bezierCurveTo(posX+epsilon, posYUp + 200 , posX2 - epsilon, posYUp + 200, posX2, posY2Up);
+      canvasCtx.bezierCurveTo(cp1x, cp1y + upValue , cp2x, cp2y + upValue, posX2, posY2Up);
       canvasCtx.stroke();  
 
     }
@@ -140,13 +149,13 @@ function draw() {
       canvasCtx.beginPath();
       //initial point
       canvasCtx.moveTo(posX, posY2Up);
-      canvasCtx.bezierCurveTo(posX+epsilon, posYUp, posX2 - epsilon, posYUp, posX2, posY2Up);
+      canvasCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, posX2, posY2Up);
       canvasCtx.stroke();
     }
 
     //space between bars
-    posX += barWidth + 8;
-    posX2 += barWidth + 8;
+    posX += barWidth;
+    posX2 += barWidth;
 
     
 
