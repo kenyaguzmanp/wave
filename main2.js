@@ -74,6 +74,11 @@ var posXarray=[];
 //initialize
 posXarray[0]=0;
 
+function clampValue(x){
+  return Math.max(min, Math.min(max, x))
+}
+
+
 
 function draw() {
   //Schedule next redraw
@@ -121,6 +126,16 @@ function draw() {
     canvasCtx.fillStyle = 'white';
     canvasCtx.fillRect(posX2-4, posY2Up, barWidth/4, 5);
     */
+
+    //dotted lines:
+    canvasCtx.setLineDash([1, 4]);/*dashes are 5px and spaces are 3px*/
+    canvasCtx.beginPath();
+    canvasCtx.moveTo(0,100);
+    canvasCtx.lineTo(400, 100);
+    canvasCtx.stroke();  
+
+
+
     //control points 
     var cp1x = posX+epsilon;
     var cp1y = posYUp;
