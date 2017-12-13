@@ -171,18 +171,26 @@ function draw() {
     var cp2x = posX2 - epsilon;
     var cp2y = posYUp;
 
+
     //if even index then is the down wave
     if(i%2 === 0){
       canvasCtx.fillStyle = 'green';
       canvasCtx.fillRect(posX2-4, posY2Up - upValue, barWidth/4, 5);
 
+      //normalize control  
       canvasCtx.lineWidth = 1;
       canvasCtx.strokeStyle = 'white';
       canvasCtx.beginPath();
       //initial point
       canvasCtx.moveTo(posX, posY2Up);
       canvasCtx.bezierCurveTo(cp1x, cp1y + upValue , cp2x, cp2y + upValue, posX2, posY2Up);
-      canvasCtx.stroke();  
+      canvasCtx.stroke();
+      
+      //down line
+      canvasCtx.beginPath();
+      canvasCtx.moveTo(posX, barHeight/2);
+      canvasCtx.lineTo(posX2, barHeight/2);
+      canvasCtx.stroke();
 
     }
     //if odd index then is the up wave 
