@@ -90,26 +90,30 @@ function draw() {
   var posX = 0;
   var posX2 = posX + barWidth;
   //console.log("BUFFER LENGTH: " + bufferLength + "barWidth: " + barWidth);
+  var posY2 = canvas.height - 5;
+  //epsilon is kindda the amplitude
+  var epsilon = 20;
 
   for (var i = 0; i < bufferLength; i++) {
     var barHeight = (dataArray[i]+130) * 2;
+    var posY = canvas.height - barHeight / 2;
     
     canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight + 100) + ', 50, 50)';
-    canvasCtx.fillRect(posX, canvas.height - barHeight / 2, barWidth, barHeight / 2);
+    canvasCtx.fillRect(posX, posY, barWidth, barHeight / 2);
     //canvasCtx.fillRect(posX, canvas.height - barHeight / 2, 2, 2);
     //draw the left corner  down point of every bar
     canvasCtx.fillStyle = 'yellow';
-    canvasCtx.fillRect(posX, canvas.height - 5, barWidth/4, 5);
+    canvasCtx.fillRect(posX, posY2, barWidth/4, 5);
 
     canvasCtx.fillStyle = 'white';
-    canvasCtx.fillRect(posX2-4, canvas.height - 5, barWidth/4, 5);
+    canvasCtx.fillRect(posX2-4, posY2, barWidth/4, 5);
 
     canvasCtx.lineWidth = 1;
     canvasCtx.strokeStyle = 'white';
     canvasCtx.beginPath();
     //initial point
-    canvasCtx.moveTo(posX, canvas.height - 5);
-    canvasCtx.bezierCurveTo(posX+17, canvas.height - barHeight / 2, posX2 - 17, canvas.height - barHeight / 2, posX2, canvas.height - 5);
+    canvasCtx.moveTo(posX, posY2);
+    canvasCtx.bezierCurveTo(posX+epsilon, posY, posX2 - epsilon, posY, posX2, posY2);
     canvasCtx.stroke();
 
 
