@@ -14,6 +14,8 @@ var audioSourceNode = audioCtx.createMediaElementSource(audioEle);
 var analyserNode;
 var bufferLength;
 var dataArray=[];
+var minDec;
+var maxDec;
 
 var canvas;
 var canvasCtx;
@@ -30,7 +32,9 @@ function createAnalyserNode(){
   console.log("analyserNode: " , analyserNode);
   analyserNode.fftSize = 256;
   bufferLength = analyserNode.frequencyBinCount;
-  console.log("bufferLength " + bufferLength);
+  minDec = analyserNode.minDecibels;
+  maxDec = analyserNode.maxDecibels;
+  console.log("minDec: " + minDec + "MaxDec: " + maxDec);
   dataArray = new Float32Array(bufferLength);
 
   dataSampleArray = new Float32Array(bufferLength);
@@ -38,7 +42,7 @@ function createAnalyserNode(){
   audioSourceNode.connect(analyserNode);
   analyserNode.connect(audioCtx.destination);
   /*
-  analyserNode.getFloatTimeDomainData(dataSampleArray);
+  analyserNode.getFloatFrequencyData(dataSampleArray);
   console.log("sampleValues: " + dataSampleArray);
   */
   createCanvas();
@@ -74,9 +78,10 @@ var posXarray=[];
 //initialize
 posXarray[0]=0;
 
-function clampValue(x){
-  return Math.max(min, Math.min(max, x))
+function mathClamp(min,mid,max){
+  return Math.min(Math.max(min,mid),max)
 }
+
 
 
 
@@ -106,11 +111,15 @@ function draw() {
   var epsilon = 20;
 
   for (var i = 0; i < bufferLength; i++) {
-    var normalizedDataArray = dataArray[i]+130;
-    var barHeight = normalizedDataArray * 5;
-    //var barHeight = (dataArray[i]+130) * 5;
-    var posY = canvas.height - barHeight / 2;
-    var upValue = 200;
+    //normalize data
+    //var normalizedDataArray = dataArray[i]+130;
+    var normalizedDataArray = dataArray[i];
+    var normalizedDataArray = mathClamp(minDec, dataArray[i], maxDec);
+    //var barHeight = normalizedDataArray *(-10);
+    //normalize the barHeight
+    var barHeight = mathClamp(normalizedDataArray *(-8), normalizedDataArray*(-3) , normalizedDataArray *(-10));
+    var posY = canvas.height - barHeight/2;
+    var upValue = canvas.height/4;
     var posYUp = posY - upValue;
     //bars:
     canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight + 100) + ', 50, 50)';
@@ -127,13 +136,33 @@ function draw() {
     canvasCtx.fillRect(posX2-4, posY2Up, barWidth/4, 5);
     */
 
+    
+
     //dotted lines:
     canvasCtx.setLineDash([1, 4]);/*dashes are 5px and spaces are 3px*/
-    canvasCtx.beginPath();
-    canvasCtx.moveTo(0,100);
-    canvasCtx.lineTo(400, 100);
-    canvasCtx.stroke();  
+   // canvasCtx.beginPath();
+   // canvasCtx.moveTo(0,100);
+  //  canvasCtx.lineTo(400, 100);
+   // canvasCtx.stroke();  
 
+    //reference lines 
+    //middle line
+    canvasCtx.beginPath();
+    canvasCtx.moveTo(0,posY2Up);
+    canvasCtx.lineTo(canvas.width, posY2Up);
+    canvasCtx.stroke();
+
+    //up line
+    canvasCtx.beginPath();
+    canvasCtx.moveTo(0,posY2Up - upValue);
+    canvasCtx.lineTo(canvas.width,posY2Up - upValue);
+    canvasCtx.stroke();
+
+    //down line
+    canvasCtx.beginPath();
+    canvasCtx.moveTo(0,posY2Up + upValue);
+    canvasCtx.lineTo(canvas.width,posY2Up + upValue);
+    canvasCtx.stroke();
 
 
     //control points 
@@ -175,7 +204,7 @@ function draw() {
     
 
   }
-  //console.log("posXarray: " + posXarray);
+  
 };
  
 //draw();
