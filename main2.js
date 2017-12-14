@@ -122,10 +122,6 @@ function draw() {
 
   //Get spectrum data
   analyserNode.getFloatFrequencyData(dataArray);
-  //console.log("datArray[0] en draw " + dataArray[0]);
-  //analyserNode.getFloatTimeDomainData(dataSampleArray);
-  //console.log("sampleValues: " + dataSampleArray.length);
-
   //Draw black background
   canvasCtx.fillStyle = 'rgb(0, 0, 0)';
   canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
