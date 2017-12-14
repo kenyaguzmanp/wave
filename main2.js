@@ -20,10 +20,17 @@ var maxDec;
 var canvas;
 var canvasCtx;
 
+//Constant Values from wave
+var wavequant;
+var bufferLength;  
+var barWidth;  
+var posX;
+var posX2;
+var posY2;
+var posY2Up;
+var upValue
+
 createAnalyserNode();
-
-
-
 
 //Create analyser node
 function createAnalyserNode(){
@@ -76,7 +83,7 @@ function drawReferenceLines(posY2Up, upValue){
     canvasCtx.moveTo(0,posY2Up);
     canvasCtx.lineTo(canvas.width, posY2Up);
     canvasCtx.stroke();
-    /*
+    
     //up line
     canvasCtx.beginPath();
     canvasCtx.moveTo(0,posY2Up - upValue);
@@ -88,7 +95,7 @@ function drawReferenceLines(posY2Up, upValue){
     canvasCtx.moveTo(0,posY2Up + upValue);
     canvasCtx.lineTo(canvas.width,posY2Up + upValue);
     canvasCtx.stroke();
-    */
+    
 }
 
 function drawReferencePoints(posX, posX2, posY2, posY2Up, barWidth){
@@ -119,6 +126,22 @@ function drawWave(ipx, ipy, cp1x, cp2x,  epx, epy, cpClaped){
   canvasCtx.stroke();
 }
 
+function setWaveValues(){
+  //barWidth also can be used to set the numbers of waves 
+  //wavequant: fixed number of waves
+  wavequant = 10;
+  bufferLength = wavequant;  
+  barWidth = (canvas.width / bufferLength);  
+  posX = 0;
+  posX2 = posX + barWidth;
+  posY2 = canvas.height - 5;
+  posY2Up = canvas.height/2;
+  //epsilon is kindda the amplitude
+  //var epsilon = 20;
+  epsilon = barWidth/4;
+  upValue = canvas.height/4;
+}
+
 
 function draw() {
   //Schedule next redraw
@@ -132,20 +155,8 @@ function draw() {
   canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
   
   //Draw spectrum
-  //barWidth also can be used to set the numbers of waves 
-  //var barWidth = (canvas.width / bufferLength)*9;
-  //wavequant: fixed number of waves
-  var wavequant = 10;
-  bufferLength = wavequant;  
-  var barWidth = (canvas.width / bufferLength);  
-  var posX = 0;
-  var posX2 = posX + barWidth;
-  //console.log("BUFFER LENGTH: " + bufferLength + "barWidth: " + barWidth);
-  var posY2 = canvas.height - 5;
-  var posY2Up = canvas.height/2;
-  //epsilon is kindda the amplitude
-  //var epsilon = 20;
-  var epsilon = barWidth/4;
+  //set initial values
+  setWaveValues()
 
   for (var i = 0; i < bufferLength; i++) {
     //normalize data
@@ -156,11 +167,11 @@ function draw() {
     //normalize the barHeight
     var barHeight = mathClamp(normalizedDataArray *(-8), normalizedDataArray*(-3) , normalizedDataArray *(-10));
     var posY = canvas.height - barHeight/2;
-    var upValue = canvas.height/4;
+    //var upValue = canvas.height/4;
     var posYUp = posY - upValue;
 
     //draw histogram bars:
-    //drawHistogramBars(posX, posY, posYUp, barWidth, barHeight);
+    drawHistogramBars(posX, posY, posYUp, barWidth, barHeight);
     //reference points:
     //drawReferencePoints(posX, posX2, posY2, posY2Up, barWidth);
     
