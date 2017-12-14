@@ -5,11 +5,17 @@ var audioCtx = new AudioContext();
 //The source is an audio file
 //the audio element is a constant
 var audioEle = new Audio();
-audioEle.src = 'audio-sample.mp3';//insert file name here
+audioEle.src = 'bye-bye-3.wav';//insert file name here
 audioEle.autoplay = true;
 audioEle.preload = 'auto';
 //audioSourceNode is a constant
 var audioSourceNode = audioCtx.createMediaElementSource(audioEle);
+
+//when song ended finished the animation
+audioEle.onended = function(event) {
+  console.log("ended song!");
+  cancelAnimationFrame(reqanimationreference);
+}
 
 var analyserNode;
 var bufferLength;
@@ -19,6 +25,7 @@ var maxDec;
 
 var canvas;
 var canvasCtx;
+var reqanimationreference;
 
 //Constant Values from wave
 var wavequant;
@@ -129,7 +136,7 @@ function drawWave(ipx, ipy, cp1x, cp2x,  epx, epy, cpClaped){
 function setWaveValues(){
   //barWidth also can be used to set the numbers of waves 
   //wavequant: fixed number of waves
-  wavequant = 10;
+  wavequant = 11;
   bufferLength = wavequant;  
   barWidth = (canvas.width / bufferLength);  
   posX = 0;
@@ -145,7 +152,7 @@ function setWaveValues(){
 
 function draw() {
   //Schedule next redraw
-  requestAnimationFrame(draw);
+  reqanimationreference = requestAnimationFrame(draw);
 
   //Get spectrum data
   analyserNode.getFloatFrequencyData(dataArray);
@@ -156,7 +163,7 @@ function draw() {
   
   //Draw spectrum
   //set initial values
-  setWaveValues()
+  setWaveValues();
 
   for (var i = 0; i < bufferLength; i++) {
     //normalize data
@@ -205,5 +212,15 @@ function draw() {
 
   }
   
+  function handleResize() { 
+    console.log("changed");
+    //canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    //draw();
+  }
+
+  //window.onresize = resize;
+
+  window.addEventListener("resize", handleResize);
+
 };
  
