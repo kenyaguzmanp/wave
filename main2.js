@@ -66,6 +66,55 @@ function mathClamp(min,mid,max){
   return Math.min(Math.max(min,mid),max)
 }
 
+function drawReferenceLines(posY2Up, upValue){
+  //reference lines 
+    //middle line
+    canvasCtx.beginPath();
+    canvasCtx.moveTo(0,posY2Up);
+    canvasCtx.lineTo(canvas.width, posY2Up);
+    canvasCtx.stroke();
+
+    //up line
+    canvasCtx.beginPath();
+    canvasCtx.moveTo(0,posY2Up - upValue);
+    canvasCtx.lineTo(canvas.width,posY2Up - upValue);
+    canvasCtx.stroke();
+
+    //down line
+    canvasCtx.beginPath();
+    canvasCtx.moveTo(0,posY2Up + upValue);
+    canvasCtx.lineTo(canvas.width,posY2Up + upValue);
+    canvasCtx.stroke();
+}
+
+function drawReferencePoints(posX, posX2, posY2, posY2Up, barWidth){
+  //reference points:
+    //draw the left corner  down point of every bar
+    canvasCtx.fillStyle = 'yellow';
+    canvasCtx.fillRect(posX, posY2/2, barWidth/4, 5);
+
+    canvasCtx.fillStyle = 'white';
+    canvasCtx.fillRect(posX2-4, posY2Up, barWidth/4, 5);
+}
+
+function drawHistogramBars(posX, posY, posYUp, barWidth, barHeight){
+  canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight + 100) + ', 50, 50)';
+  //canvasCtx.fillRect(posX, posY, barWidth, barHeight / 2);
+  canvasCtx.fillRect(posX, posYUp, barWidth, barHeight / 2);
+
+}
+
+function drawWave(ipx, ipy, cp1x, cp2x,  epx, epy, cpClaped){
+  //normalize control  
+  canvasCtx.lineWidth = 1;
+  canvasCtx.strokeStyle = 'white';
+  canvasCtx.beginPath();
+  //initial point
+  canvasCtx.moveTo(ipx, ipy);
+  canvasCtx.bezierCurveTo(cp1x, cpClaped, cp2x, cpClaped, epx, epy);
+  canvasCtx.stroke();
+}
+
 
 function draw() {
   //Schedule next redraw
@@ -103,49 +152,16 @@ function draw() {
     var posY = canvas.height - barHeight/2;
     var upValue = canvas.height/4;
     var posYUp = posY - upValue;
-    //bars:
-    canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight + 100) + ', 50, 50)';
-    //canvasCtx.fillRect(posX, posY, barWidth, barHeight / 2);
-    //canvasCtx.fillRect(posX, posYUp, barWidth, barHeight / 2);
-   
+
+    //draw histogram bars:
+    //drawHistogramBars(posX, posY, posYUp, barWidth, barHeight);
     //reference points:
-    //draw the left corner  down point of every bar
-    /*
-    canvasCtx.fillStyle = 'yellow';
-    canvasCtx.fillRect(posX, posY2/2, barWidth/4, 5);
-
-    canvasCtx.fillStyle = 'white';
-    canvasCtx.fillRect(posX2-4, posY2Up, barWidth/4, 5);
-    */
-
+    //drawReferencePoints(posX, posX2, posY2, posY2Up, barWidth);
     
-
     //dotted lines:
     canvasCtx.setLineDash([1, 4]);/*dashes are 5px and spaces are 3px*/
-   // canvasCtx.beginPath();
-   // canvasCtx.moveTo(0,100);
-  //  canvasCtx.lineTo(400, 100);
-   // canvasCtx.stroke();  
 
-    //reference lines 
-    //middle line
-    canvasCtx.beginPath();
-    canvasCtx.moveTo(0,posY2Up);
-    canvasCtx.lineTo(canvas.width, posY2Up);
-    canvasCtx.stroke();
-
-    //up line
-    canvasCtx.beginPath();
-    canvasCtx.moveTo(0,posY2Up - upValue);
-    canvasCtx.lineTo(canvas.width,posY2Up - upValue);
-    canvasCtx.stroke();
-
-    //down line
-    canvasCtx.beginPath();
-    canvasCtx.moveTo(0,posY2Up + upValue);
-    canvasCtx.lineTo(canvas.width,posY2Up + upValue);
-    canvasCtx.stroke();
-
+    drawReferenceLines(posY2Up, upValue);
 
     //control points 
     var cp1x = posX+epsilon;
@@ -156,66 +172,21 @@ function draw() {
 
     //if even index then is the down wave
     if(i%2 === 0){
-      canvasCtx.fillStyle = 'green';
-      canvasCtx.fillRect(posX2-4, posY2Up - upValue, barWidth/4, 5);
-
-      //normalize control  
-      canvasCtx.lineWidth = 1;
-      canvasCtx.strokeStyle = 'white';
-      canvasCtx.beginPath();
-      //initial point
-      /*
-      canvasCtx.moveTo(posX, posY2Up);
-      //cp1y = mathClamp(canvas.height/2, cp1y,(3*canvas.height)/4);
-      //cp2y = mathClamp(canvas.height/2, cp2y,(3*canvas.height)/4);
-      canvasCtx.bezierCurveTo(cp1x, cp1y + upValue , cp2x, cp2y + upValue, posX2, posY2Up);
-      */
-      canvasCtx.moveTo(posX, posY2Up);
-      //canvasCtx.bezierCurveTo(posX + epsilon, posY, posX2 - epsilon, posY, posX2, posY2Up);
-      var cpyAux2 = mathClamp(0.55*canvas.height, posY, canvas.height); //cpyAux2 is the clamp between middle and down reference lines
-      //console.log("el posY: " + posY);
-      canvasCtx.bezierCurveTo(posX + epsilon, cpyAux2, posX2 - epsilon, cpyAux2, posX2, posY2Up);
-      canvasCtx.stroke();
-      
-      //down line
-      canvasCtx.beginPath();
-      //cp1y = mathClamp(canvas.height/2, cp1y,(3*canvas.height)/4);
-      canvasCtx.moveTo(posX, cp1y + upValue);
-      canvasCtx.lineTo(posX2, cp1y + upValue);
-      canvasCtx.stroke();
-
+      //cpyAux2 is the clamp between middle and down reference lines
+      var cpyAux2 = mathClamp(0.55*canvas.height, posY, canvas.height);
+      drawWave(posX, posY2Up, posX + epsilon, posX2 - epsilon, posX2, posY2Up, cpyAux2);
     }
     //if odd index then is the up wave 
     else{
-      //bezier curves
-      canvasCtx.lineWidth = 1;
-      canvasCtx.strokeStyle = 'white';
-      canvasCtx.beginPath();
+      var cpyAux = mathClamp(posY2Up - upValue, posY - upValue, posY2Up-50); 
+      drawWave(posX, posY2Up, posX + epsilon, posX2 - epsilon, posX2, posY2Up, cpyAux);
 
-     // cp1y = mathClamp(canvas.height/2, cp1y,(3*canvas.height)/4);
-      //cp2y = mathClamp(canvas.height/2, cp2y,(3*canvas.height)/4);
-
-
-      //initial point
-      /*
-      canvasCtx.moveTo(posX, posY2Up);
-      canvasCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, posX2, posY2Up);
-      */
-      canvasCtx.moveTo(posX, posY2Up);
-      //canvasCtx.bezierCurveTo(posX + epsilon, posY - upValue, posX2 - epsilon, posY - upValue, posX2, posY2Up);
-      var cpyAux = mathClamp(posY2Up - upValue, posY - upValue, posY2Up-50); //cpyAux is the clamp between middle and up reference lines
-      canvasCtx.bezierCurveTo(posX + epsilon, cpyAux, posX2 - epsilon, cpyAux, posX2, posY2Up);
-      canvasCtx.stroke();
     }
-
     //space between bars
     posX += barWidth;
     posX2 += barWidth;
-
-    
 
   }
   
 };
  
-//draw();
