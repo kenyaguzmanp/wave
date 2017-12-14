@@ -85,12 +85,6 @@ function getRandom(min, max) {
 
 function drawReferenceLines(posY2Up, upValue){
   //reference lines 
-    //middle line
-    canvasCtx.beginPath();
-    canvasCtx.moveTo(0,posY2Up);
-    canvasCtx.lineTo(canvas.width, posY2Up);
-    canvasCtx.stroke();
-    
     //up line
     canvasCtx.beginPath();
     canvasCtx.moveTo(0,posY2Up - upValue);
@@ -113,6 +107,14 @@ function drawReferencePoints(posX, posX2, posY2, posY2Up, barWidth){
 
     canvasCtx.fillStyle = 'white';
     canvasCtx.fillRect(posX2-4, posY2Up, barWidth/4, 5);
+}
+
+function drawMiddleLine(posY2Up, upValue){
+  //middle line
+  canvasCtx.beginPath();
+  canvasCtx.moveTo(0,posY2Up);
+  canvasCtx.lineTo(canvas.width, posY2Up);
+  canvasCtx.stroke();
 }
 
 function drawHistogramBars(posX, posY, posYUp, barWidth, barHeight){
@@ -178,14 +180,15 @@ function draw() {
     var posYUp = posY - upValue;
 
     //draw histogram bars:
-    drawHistogramBars(posX, posY, posYUp, barWidth, barHeight);
+    //drawHistogramBars(posX, posY, posYUp, barWidth, barHeight);
     //reference points:
     //drawReferencePoints(posX, posX2, posY2, posY2Up, barWidth);
     
     //dotted lines:
     canvasCtx.setLineDash([1, 4]);/*dashes are 5px and spaces are 3px*/
 
-    drawReferenceLines(posY2Up, upValue);
+    //drawReferenceLines(posY2Up, upValue);
+    drawMiddleLine(posY2Up, upValue);
 
     //control points 
     var cp1x = posX+epsilon;
@@ -214,12 +217,12 @@ function draw() {
   
   function handleResize() { 
     console.log("changed");
+    cancelAnimationFrame(reqanimationreference);
     //canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     //draw();
   }
 
-  //window.onresize = resize;
-
+  //When rezise pause the animation
   window.addEventListener("resize", handleResize);
 
 };
