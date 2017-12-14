@@ -66,6 +66,10 @@ function mathClamp(min,mid,max){
   return Math.min(Math.max(min,mid),max)
 }
 
+function getRandom(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
 function drawReferenceLines(posY2Up, upValue){
   //reference lines 
     //middle line
@@ -73,7 +77,7 @@ function drawReferenceLines(posY2Up, upValue){
     canvasCtx.moveTo(0,posY2Up);
     canvasCtx.lineTo(canvas.width, posY2Up);
     canvasCtx.stroke();
-
+    /*
     //up line
     canvasCtx.beginPath();
     canvasCtx.moveTo(0,posY2Up - upValue);
@@ -85,6 +89,7 @@ function drawReferenceLines(posY2Up, upValue){
     canvasCtx.moveTo(0,posY2Up + upValue);
     canvasCtx.lineTo(canvas.width,posY2Up + upValue);
     canvasCtx.stroke();
+    */
 }
 
 function drawReferencePoints(posX, posX2, posY2, posY2Up, barWidth){
@@ -122,6 +127,7 @@ function draw() {
 
   //Get spectrum data
   analyserNode.getFloatFrequencyData(dataArray);
+
   //Draw black background
   canvasCtx.fillStyle = 'rgb(0, 0, 0)';
   canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
@@ -169,12 +175,13 @@ function draw() {
     //if even index then is the down wave
     if(i%2 === 0){
       //cpyAux2 is the clamp between middle and down reference lines
-      var cpyAux2 = mathClamp(0.55*canvas.height, posY, canvas.height);
+      var cpyAux2 = mathClamp(getRandom(0.55*canvas.height, 0.55*canvas.height + 10), posY, canvas.height);
       drawWave(posX, posY2Up, posX + epsilon, posX2 - epsilon, posX2, posY2Up, cpyAux2);
     }
     //if odd index then is the up wave 
     else{
-      var cpyAux = mathClamp(posY2Up - upValue, posY - upValue, posY2Up-50); 
+      //getRandom(posY2Up-30, posY2Up-35)
+      var cpyAux = mathClamp(posY2Up - upValue, posY - upValue, getRandom(posY2Up-30, posY2Up-45)); 
       drawWave(posX, posY2Up, posX + epsilon, posX2 - epsilon, posX2, posY2Up, cpyAux);
 
     }
