@@ -32,6 +32,7 @@ function createAnalyserNode(){
   console.log("analyserNode: " , analyserNode);
   analyserNode.fftSize = 256;
   bufferLength = analyserNode.frequencyBinCount;
+  console.log("bufferLength: " + bufferLength);
   minDec = analyserNode.minDecibels;
   maxDec = analyserNode.maxDecibels;
   console.log("minDec: " + minDec + "MaxDec: " + maxDec);
@@ -46,15 +47,13 @@ function createAnalyserNode(){
 //Create 2D canvas
 function createCanvas(){
   console.log("in create canvas");
+  waveContainerDiv = document.getElementById('waveContainer'); 
   canvas = document.createElement('canvas');
-  /*
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  */
-  canvas.width = 800;
+  canvas.id = "wave";
+  canvas.width = waveContainerDiv.offsetWidth;
   canvas.height = 600;
   console.log("canvas height: " + canvas.height + "canvas width: " + canvas.width);
-  document.body.appendChild(canvas);
+  waveContainerDiv.appendChild(canvas);
   canvasCtx = canvas.getContext('2d');
   canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
   //draw the canvas
@@ -134,14 +133,19 @@ function draw() {
   
   //Draw spectrum
   //barWidth also can be used to set the numbers of waves 
-  var barWidth = (canvas.width / bufferLength)*9;  
+  //var barWidth = (canvas.width / bufferLength)*9;
+  //wavequant: fixed number of waves
+  var wavequant = 10;
+  bufferLength = wavequant;  
+  var barWidth = (canvas.width / bufferLength);  
   var posX = 0;
   var posX2 = posX + barWidth;
   //console.log("BUFFER LENGTH: " + bufferLength + "barWidth: " + barWidth);
   var posY2 = canvas.height - 5;
   var posY2Up = canvas.height/2;
   //epsilon is kindda the amplitude
-  var epsilon = 20;
+  //var epsilon = 20;
+  var epsilon = barWidth/4;
 
   for (var i = 0; i < bufferLength; i++) {
     //normalize data
@@ -180,7 +184,6 @@ function draw() {
     }
     //if odd index then is the up wave 
     else{
-      //getRandom(posY2Up-30, posY2Up-35)
       var cpyAux = mathClamp(posY2Up - upValue, posY - upValue, getRandom(posY2Up-30, posY2Up-45)); 
       drawWave(posX, posY2Up, posX + epsilon, posX2 - epsilon, posX2, posY2Up, cpyAux);
 
