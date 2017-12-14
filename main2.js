@@ -36,15 +36,9 @@ function createAnalyserNode(){
   maxDec = analyserNode.maxDecibels;
   console.log("minDec: " + minDec + "MaxDec: " + maxDec);
   dataArray = new Float32Array(bufferLength);
-
-  dataSampleArray = new Float32Array(bufferLength);
   //Set up audio node network
   audioSourceNode.connect(analyserNode);
   analyserNode.connect(audioCtx.destination);
-  /*
-  analyserNode.getFloatFrequencyData(dataSampleArray);
-  console.log("sampleValues: " + dataSampleArray);
-  */
   createCanvas();
  
 }
@@ -53,9 +47,6 @@ function createAnalyserNode(){
 function createCanvas(){
   console.log("in create canvas");
   canvas = document.createElement('canvas');
-  //canvas.style.position = 'absolute';
-  //canvas.style.top = 0;
-  //canvas.style.left = 0;
   /*
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -67,22 +58,13 @@ function createCanvas(){
   canvasCtx = canvas.getContext('2d');
   canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
   //draw the canvas
-  draw();
-  
+  draw(); 
 }
 
- 
-
-//posX Array 
-var posXarray=[];
-//initialize
-posXarray[0]=0;
 
 function mathClamp(min,mid,max){
   return Math.min(Math.max(min,mid),max)
 }
-
-
 
 
 function draw() {
@@ -114,7 +96,7 @@ function draw() {
     //normalize data
     //var normalizedDataArray = dataArray[i]+130;
     var normalizedDataArray = dataArray[i];
-    var normalizedDataArray = mathClamp(minDec, dataArray[i], maxDec);
+    var normalizedDataArray = mathClamp(minDec, normalizedDataArray, maxDec);
     //var barHeight = normalizedDataArray *(-10);
     //normalize the barHeight
     var barHeight = mathClamp(normalizedDataArray *(-8), normalizedDataArray*(-3) , normalizedDataArray *(-10));
@@ -124,7 +106,7 @@ function draw() {
     //bars:
     canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight + 100) + ', 50, 50)';
     //canvasCtx.fillRect(posX, posY, barWidth, barHeight / 2);
-    canvasCtx.fillRect(posX, posYUp, barWidth, barHeight / 2);
+    //canvasCtx.fillRect(posX, posYUp, barWidth, barHeight / 2);
    
     //reference points:
     //draw the left corner  down point of every bar
@@ -182,14 +164,24 @@ function draw() {
       canvasCtx.strokeStyle = 'white';
       canvasCtx.beginPath();
       //initial point
+      /*
       canvasCtx.moveTo(posX, posY2Up);
+      //cp1y = mathClamp(canvas.height/2, cp1y,(3*canvas.height)/4);
+      //cp2y = mathClamp(canvas.height/2, cp2y,(3*canvas.height)/4);
       canvasCtx.bezierCurveTo(cp1x, cp1y + upValue , cp2x, cp2y + upValue, posX2, posY2Up);
+      */
+      canvasCtx.moveTo(posX, posY2Up);
+      //canvasCtx.bezierCurveTo(posX + epsilon, posY, posX2 - epsilon, posY, posX2, posY2Up);
+      var cpyAux2 = mathClamp(0.55*canvas.height, posY, canvas.height); //cpyAux2 is the clamp between middle and down reference lines
+      //console.log("el posY: " + posY);
+      canvasCtx.bezierCurveTo(posX + epsilon, cpyAux2, posX2 - epsilon, cpyAux2, posX2, posY2Up);
       canvasCtx.stroke();
       
       //down line
       canvasCtx.beginPath();
-      canvasCtx.moveTo(posX, barHeight/2);
-      canvasCtx.lineTo(posX2, barHeight/2);
+      //cp1y = mathClamp(canvas.height/2, cp1y,(3*canvas.height)/4);
+      canvasCtx.moveTo(posX, cp1y + upValue);
+      canvasCtx.lineTo(posX2, cp1y + upValue);
       canvasCtx.stroke();
 
     }
@@ -199,9 +191,20 @@ function draw() {
       canvasCtx.lineWidth = 1;
       canvasCtx.strokeStyle = 'white';
       canvasCtx.beginPath();
+
+     // cp1y = mathClamp(canvas.height/2, cp1y,(3*canvas.height)/4);
+      //cp2y = mathClamp(canvas.height/2, cp2y,(3*canvas.height)/4);
+
+
       //initial point
+      /*
       canvasCtx.moveTo(posX, posY2Up);
       canvasCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, posX2, posY2Up);
+      */
+      canvasCtx.moveTo(posX, posY2Up);
+      //canvasCtx.bezierCurveTo(posX + epsilon, posY - upValue, posX2 - epsilon, posY - upValue, posX2, posY2Up);
+      var cpyAux = mathClamp(posY2Up - upValue, posY - upValue, posY2Up-50); //cpyAux is the clamp between middle and up reference lines
+      canvasCtx.bezierCurveTo(posX + epsilon, cpyAux, posX2 - epsilon, cpyAux, posX2, posY2Up);
       canvasCtx.stroke();
     }
 
